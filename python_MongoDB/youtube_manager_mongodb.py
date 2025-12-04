@@ -1,6 +1,7 @@
 from pymongo import MongoClient
+from bson import ObjectId
 
-client = MongoClient("")
+client = MongoClient("",tlsAllowInvalidCertificates=True)
 
 db = client["youtube_manager"]
 video_collection = db["videos"]
@@ -8,6 +9,8 @@ video_collection = db["videos"]
 print(video_collection)
 
 def list_videos():
+    print("\n")
+    print("*"*70)
     for video in video_collection.find():
         print(f"ID: {video['_id']}, Name: {video['name']}, Time: {video['time']}")
 
@@ -16,12 +19,12 @@ def add_video(name, time):
 
 def update_video(video_id, name, time):
     video_collection.update_one(
-        {'_id': video_id},
+        {'_id': ObjectId(video_id)},
         {"$set": {'name': name, 'time': time}}
     )
 
 def delete_video(video_id):
-    video_collection.delete_one({'_id': video_id})
+    video_collection.delete_one({'_id': ObjectId(video_id)})
 
 def main():
     while True:
